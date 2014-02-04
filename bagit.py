@@ -509,8 +509,46 @@ class Bag(object):
             (alg, h.hexdigest()) for alg, h in f_hashers.items()
         )
 
+    def update_bag_info(self, params):
+        bag_info_file_path = os.path.join(self.path, 'bag-info.txt')
+
+        #open bag-info.txt file and read entries
+        with open(bag_info_file_path, 'rb') as bag_info_file:
+            bag_info_file_content = bag_info_file.read()
+
+        if '\r\n' in bag_info_file_content:
+            bag_info_lines = bag_info_file_content.split('\r\n')
+        else:
+            bag_info_lines = bag_info_file_content.split('\n')
+
+        bag_info_content = {}
+        for line in bag_info_lines:
+            if line:
+                content = line.split(': ')
+                bag_info_content[content[0]] = content[1]
+
+        #Merge existing bag-info.txt entries with passed params.
+        #In case of duplicate entries, values from the passed params
+        # will stored in the bag-info.txt file
+        self.info = dict(bag_info_content.items() + params.items())
+        with open(bag_info_file_path, 'wb') as bag_info_file:
+
+            headers = self.info.keys()
+            headers.sort()
+            for key in headers:
+                bag_info_file.write(key + ': ' + self.info[key] + os.linesep)
+
+        #update tagmanifest file
+        for alg in self.algs:
+            _make_tagmanifest_file(('tagmanifest-%s.txt') % alg, self.path)
+
+        #Reload Bag entries
+        self._load_manifests()
+
+
 class BagError(Exception):
     pass
+
 
 class BagValidationError(BagError):
     def __init__(self, message, details=[]):
@@ -644,17 +682,19 @@ def _make_tagmanifest_file(tagmanifest_file, bag_dir):
     files = [f for f in listdir(bag_dir) if isfile(join(bag_dir, f))]
     checksums = []
     for f in files:
-        fh = open(f, 'rb')
+        if f == tagmanifest_file:
+            continue
+        fh = open(join(bag_dir, f), 'rb')
         m = hashlib.md5()
         while True:
             bytes = fh.read(16384)
             if not bytes:
                 break
             m.update(bytes)
-
         checksums.append((m.hexdigest(), f))
         fh.close()
-    tagmanifest = open(tagmanifest_file, 'wb')
+
+    tagmanifest = open(join(bag_dir, tagmanifest_file), 'wb')
     for digest, filename in checksums:
         tagmanifest.write('%s %s\n' % (digest, filename))
     tagmanifest.close()
