@@ -309,6 +309,14 @@ class TestBag(unittest.TestCase):
         today = datetime.date.strftime(datetime.date.today(), "%Y-%m-%d")
         self.assertTrue('Bagging-Date: %s' % today in bag_info_txt)
 
+    def test_update_bag_info(self):
+        params = {'bag-id': '0000'}
+        bag = bagit.make_bag(self.tmpdir)
+        self.assertFalse('bag-id' in bag.info)
+        bag.update_bag_info(params)
+        self.assertTrue('bag-id' in bag.info)
+        self.assertEquals(bag.info['bag-id'], '0000')
+
 
 
 if __name__ == '__main__':
