@@ -92,7 +92,7 @@ bag = bagit.Bag("/path/to/bag")
 try:
   bag.validate()
 
-except bag.BagValidationError, e:
+except bagit.BagValidationError, e:
   for d in e.details:
     if isinstance(d, bag.ChecksumMismatch):
       print "expected %s to have %s checksum of %s but found %s" % \
@@ -116,3 +116,6 @@ License
 -------
 
 [![cc0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
+
+Note: By contributing to this project, you agree to license your work under the
+same terms as those that govern this project's distribution.
