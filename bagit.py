@@ -521,8 +521,46 @@ class Bag(object):
             (alg, h.hexdigest()) for alg, h in f_hashers.items()
         )
 
+    def update_bag_info(self, params):
+        bag_info_file_path = os.path.join(self.path, 'bag-info.txt')
+
+        #open bag-info.txt file and read entries
+        with open(bag_info_file_path, 'rb') as bag_info_file:
+            bag_info_file_content = bag_info_file.read()
+
+        if '\r\n' in bag_info_file_content:
+            bag_info_lines = bag_info_file_content.split('\r\n')
+        else:
+            bag_info_lines = bag_info_file_content.split('\n')
+
+        bag_info_content = {}
+        for line in bag_info_lines:
+            if line:
+                content = line.split(': ')
+                bag_info_content[content[0]] = content[1]
+
+        #Merge existing bag-info.txt entries with passed params.
+        #In case of duplicate entries, values from the passed params
+        # will stored in the bag-info.txt file
+        self.info = dict(bag_info_content.items() + params.items())
+        with open(bag_info_file_path, 'wb') as bag_info_file:
+
+            headers = self.info.keys()
+            headers.sort()
+            for key in headers:
+                bag_info_file.write(key + ': ' + self.info[key] + os.linesep)
+
+        #update tagmanifest file
+        for alg in self.algs:
+            _make_tagmanifest_file(('tagmanifest-%s.txt') % alg, self.path)
+
+        #Reload Bag entries
+        self._load_manifests()
+
+
 class BagError(Exception):
     pass
+
 
 class BagValidationError(BagError):
     def __init__(self, message, details=[]):
