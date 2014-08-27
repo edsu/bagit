@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 """
-This fork has been modified to use sha256 as default instead of md5
-
 BagIt is a directory, filename convention for bundling an arbitrary set of
 files with a manifest, checksums, and additional metadata. More about BagIt
 can be found at:
