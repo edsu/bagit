@@ -35,7 +35,6 @@ import os
 import re
 import sys
 import codecs
-import signal
 import hashlib
 import logging
 import optparse
@@ -512,9 +511,6 @@ class Bag(object):
         if not available_hashers:
             raise RuntimeError("%s: Unable to validate bag contents: none of the hash algorithms in %s are supported!" % (self, self.algs))
 
-        def _init_worker():
-            signal.signal(signal.SIGINT, signal.SIG_IGN)
-
         args = ((self.path, rel_path, hashes, available_hashers) for rel_path, hashes in list(self.entries.items()))
 
         try:
@@ -522,7 +518,7 @@ class Bag(object):
                 hash_results = list(map(_calc_hashes, args))
             else:
                 try:
-                    pool = multiprocessing.Pool(processes if processes else None, _init_worker)
+                    pool = multiprocessing.Pool(processes if processes else None)
                     hash_results = pool.map(_calc_hashes, args)
                 finally:
                     try:
