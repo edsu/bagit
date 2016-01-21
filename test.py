@@ -280,6 +280,15 @@ class TestSingleProcessValidation(unittest.TestCase):
         os.chmod(j(self.tmpdir, "data/loc/2478433644_2839c5e8b8_o_d.jpg"), 0)
         self.assertRaises(bagit.BagValidationError, self.validate, bag, fast=False)
 
+    def test_unicode_normalization(self):
+        # nfc or nfd should not matter
+        open(j(self.tmpdir, 'i`'), 'w').write('')
+        bag = bagit.make_bag(self.tmpdir, checksum=["md5"])
+        manifest_txt = codecs.open(j(self.tmpdir, 'manifest-md5.txt'), 'r', 'utf8').read()
+        os.rename(j(self.tmpdir, 'data', 'i`'), j(self.tmpdir, 'data', 'í'))
+        self.assertTrue(u'd41d8cd98f00b204e9800998ecf8427e  data/i`' in manifest_txt)
+        self.assertTrue(self.validate(bag))
+
 
 class TestMultiprocessValidation(TestSingleProcessValidation):
 
