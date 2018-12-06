@@ -10,7 +10,7 @@ be used.
 
 ## Command Line
 
-### Creating a Bag
+### Create
 
 Convert the current working directory into a bag:
 
@@ -21,10 +21,28 @@ Convert a given directory into a bag:
 
     % bagit init /my/awesome/data
 
-Use a directory as a source for creating a bag somewhere at another location.
-Unlike the previous two commands the original data will be unmodified.
+Use a source directory to create a bag at another location. Unlike the previous
+two commands this will copy the files and not modify the source directory:
 
     % bagit init /my/awesome/data /vol/megastorage/my-awesome-data
 
 
+### Validate
+
+Validate the bag that is present in your current working directory. You can be
+down inside of it.
+
+    % bagit validate 
+
+Validate a bag at a given location:
+
+    % bagit validate /my/awesome/data
+
+### Update
+
+You may find yourself modifying bag metadata or payload files and want to update
+the manifest files with the latest checksums:
+
+    % bag commit bag-info.txt
+    % bag commit data/rickroll.mp3
 
