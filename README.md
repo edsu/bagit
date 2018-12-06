@@ -43,6 +43,6 @@ Validate a bag at a given location:
 You may find yourself modifying bag metadata or payload files and want to update
 the manifest files with the latest checksums:
 
-    % bag commit bag-info.txt
-    % bag commit data/rickroll.mp3
+    % bagit commit bag-info.txt
+    % bagit commit data/rickroll.mp3
 
