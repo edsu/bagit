@@ -9,7 +9,7 @@ setup(
     url="https://libraryofcongress.github.io/bagit-python/",
     author="Ed Summers",
     author_email="ehs@pobox.com",
-    py_modules=["bagit"],
+    packages=["bagit"],
     description="Create and validate BagIt packages",
     long_description="bagit is a Python library and command line utility for working with BagIt style packages.",
     entry_points={"console_scripts": ["bagit = bagit.cli:main"]},
