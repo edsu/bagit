@@ -1,68 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from __future__ import absolute_import, print_function
-
-import glob
-import os
-import subprocess
-import sys
-from codecs import open
-
 from setuptools import setup
-
-if sys.version_info < (2, 7):
-    print("Python 2.7 or higher is required")
-    sys.exit(1)
-
-description = "Create and validate BagIt packages"
-
-with open("README.rst", encoding="utf-8") as readme:
-    long_description = readme.read()
-
-tests_require = ["mock", "coverage"]
-
-
-def get_message_catalogs():
-    message_catalogs = []
-
-    for po_file in glob.glob("locale/*/LC_MESSAGES/bagit-python.po"):
-        mo_file = po_file.replace(".po", ".mo")
-
-        if not os.path.exists(mo_file) or os.path.getmtime(mo_file) < os.path.getmtime(
-            po_file
-        ):
-            try:
-                subprocess.check_call(["msgfmt", "-o", mo_file, po_file])
-            except (OSError, subprocess.CalledProcessError) as exc:
-                print(
-                    "Translation catalog %s could not be compiled (is gettext installed?) "
-                    " — translations will not be available for this language: %s"
-                    % (po_file, exc),
-                    file=sys.stderr,
-                )
-                continue
-
-        message_catalogs.append((os.path.dirname(mo_file), (mo_file,)))
-
-    return message_catalogs
-
 
 setup(
     name="bagit",
-    use_scm_version=True,
+    version="2.0.0",
     url="https://libraryofcongress.github.io/bagit-python/",
     author="Ed Summers",
     author_email="ehs@pobox.com",
     py_modules=["bagit"],
-    scripts=["bagit.py"],
-    data_files=get_message_catalogs(),
-    description=description,
-    long_description=long_description,
-    platforms=["POSIX"],
-    test_suite="test",
-    setup_requires=["setuptools_scm"],
-    tests_require=tests_require,
+    description="Create and validate BagIt packages",
+    long_description="bagit is a Python library and command line utility for working with BagIt style packages.",
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     classifiers=[
         "License :: Public Domain",
         "Intended Audience :: Developers",
