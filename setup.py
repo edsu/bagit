@@ -12,6 +12,7 @@ setup(
     py_modules=["bagit"],
     description="Create and validate BagIt packages",
     long_description="bagit is a Python library and command line utility for working with BagIt style packages.",
+    entry_points={"console_scripts": ["bagit = bagit.cli:main"]},
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     classifiers=[
