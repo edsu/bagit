@@ -11,6 +11,7 @@ tox = "*"
 black = "*"
 "flake8" = "*"
 isort = "*"
+pylint = "*"
 
 [pipenv]
 allow_prereleases = true
