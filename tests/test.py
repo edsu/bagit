@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+# These are old tests that are going to be refactored into separate files
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import codecs
@@ -35,34 +37,6 @@ def slurp_text_file(filename):
 
 class SelfCleaningTestCase(unittest.TestCase):
     """TestCase subclass which cleans up self.tmpdir after each test"""
-
-    def setUp(self):
-        super(SelfCleaningTestCase, self).setUp()
-
-        self.starting_directory = (
-            os.getcwd()
-        )  # FIXME: remove this after we stop changing directories in bagit.py
-        self.tmpdir = tempfile.mkdtemp()
-        if os.path.isdir(self.tmpdir):
-            shutil.rmtree(self.tmpdir)
-        shutil.copytree("test-data", self.tmpdir)
-
-    def tearDown(self):
-        # FIXME: remove this after we stop changing directories in bagit.py
-        os.chdir(self.starting_directory)
-        if os.path.isdir(self.tmpdir):
-            # Clean up after tests which leave inaccessible files behind:
-
-            os.chmod(self.tmpdir, 0o700)
-
-            for dirpath, subdirs, filenames in os.walk(self.tmpdir, topdown=True):
-                for i in subdirs:
-                    os.chmod(os.path.join(dirpath, i), 0o700)
-
-            shutil.rmtree(self.tmpdir)
-
-        super(SelfCleaningTestCase, self).tearDown()
-
 
 @mock.patch(
     "bagit.VERSION", new="1.5.4"
