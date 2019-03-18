@@ -26,7 +26,6 @@ two commands this will copy the files and not modify the source directory:
 
     % bagit init /my/awesome/data /vol/megastorage/my-awesome-data
 
-
 ### Validate
 
 Validate the bag that is present in your current working directory. You can be
@@ -43,6 +42,57 @@ Validate a bag at a given location:
 You may find yourself modifying bag metadata or payload files and want to update
 the manifest files with the latest checksums:
 
-    % bagit commit bag-info.txt
-    % bagit commit data/rickroll.mp3
+    % bagit add bag-info.txt
+    % bagit add data/rickroll.mp3
+    % bagit commit
 
+## API
+
+### Bag
+
+The *Bag* class can be used directly in your own code to open a bag and operate on it. For example, in order to create a new *Bag* instance and verify it you can:
+
+```python
+from bagit import Bag
+
+bag = Bag("/my/awesome/data")
+print(bag.validate())
+```
+
+Similarly if you need to create a bag you can use the *create_bag* function:
+
+```python
+from bagit import create_bag
+
+bag = create_bag("/my/awesome/data")
+```
+
+Add a file to a bag, if it's relative to the bag payload:
+
+```python
+bag.add_file("video.mp4")
+```
+
+## Storage
+
+In addition to interacting to Bags on the filesystem you can also store bags in alteratne storage containers.
+
+### Zip
+
+```python
+bag = Bag("my-awesome-bag.zip")
+print(bag.validate())
+```
+
+### S3
+
+```python
+bag = Bag("s3://my-awesome-bag")
+print(bag.validate())
+```
+
+### Bag Events
+
+If you need to override the way that Bags are processed you can subclass *bagit.Bag*:
+
+TBD.
