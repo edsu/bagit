@@ -1,2 +1,2 @@
-from bag import Bag
-from cli import main
+from .cli import main
+from .bag import make_bag
