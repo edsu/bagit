@@ -10,7 +10,6 @@ def test_sha1_sha256_manifest():
     assert isfile(join(TEMP_DATA, "manifest-sha256.txt"))
     assert bag.validate(bag, fast=True)
 
-
 def test_md5_sha256_manifest():
     bag = bagit.make_bag(TEMP_DATA, checksums=["md5", "sha256"])
     assert isfile(join(TEMP_DATA, "manifest-md5.txt"))
