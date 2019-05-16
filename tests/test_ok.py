@@ -3,7 +3,7 @@ import bagit
 
 from utils import setup_module, teardown_module, TEMP_DATA
 
-def test_ok():
+def test_version():
     assert bagit.VERSION == "1.5.4"
 
 def test_create_dir():

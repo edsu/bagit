@@ -1,11 +1,11 @@
 import os
-import bagit
 from utils import *
 
+from bagit import Bag
 from os.path import join, isdir, isfile
 
 info = {"Bagging-Date": "1970-01-01", "Contact-Email": "ehs@pobox.com"}
-bagit.make_bag(TEMP_DATA, bag_info=info, checksums=["md5"])
+bag = Bag.create_bag(TEMP_DATA, bag_info=info, checksums=["md5"])
 
 def test_structure():
     assert isdir(join(TEMP_DATA, "data"))

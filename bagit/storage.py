@@ -11,6 +11,14 @@ class Storage:
     other storage systems to inherit or override.
     """
 
+    @classmethod
+    def new_from_location(klass, location):
+        # TODO: extend for .zip, s3, etc
+        return FileSystemStorage(location)
+
+    def __repr__(self):
+        raise NotImplementedError("subclasses of Storage must provide __repr__() method")
+
     def exists(self, name):
         """
         Return True if the specified file exists or False if it does not.
@@ -76,6 +84,9 @@ class FileSystemStorage(Storage):
     def __init__(self, location=None):
         self.location = location
 
+    def __repr__(self):
+        return self.location
+
     def path(self, name):
         return join(self.location, name)
 
@@ -84,6 +95,10 @@ class FileSystemStorage(Storage):
 
     def open(self, name, mode='r'):
         return open(self.path(name), mode)
+
+    def save(self, name, content):
+        # TODO
+        pass
 
     def listdir(self, name=''):
         dirs, files = [], []
