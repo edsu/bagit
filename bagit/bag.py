@@ -11,11 +11,12 @@ class Bag:
         Create a bag in place, or at a given destination using a given directory of source data.
         """
         src = Storage.new_from_location(source)
-        if destination:
-            dst = Storage.new_from_location(destination)
-            src.copy(dst)
-            src = dst
+        for path in src.listdir():
+            src.move(path, )
+
         return Bag(str(src), create=True)
 
     def __init__(self, location, create=False):
         self.storage = Storage.new_from_location(location)
+        if create:
+            self.
