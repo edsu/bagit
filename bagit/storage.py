@@ -1,4 +1,6 @@
+import io
 import os
+import hashlib
 
 from os.path import join, exists
 
@@ -51,6 +53,23 @@ class Storage:
     def size(self, name):
         raise NotImplementedError("subclasses of Storage must provide a size() method.")
 
+    def md5(self, name):
+        return self.hexdigest(name, [hashlib.md5])[0]
+
+    def sha256(self, name):
+        return self.hexdigest(name, [hashlib.sha256])[0]
+ 
+    def hexdigest(self, name, algos, buffer_size=io.DEFAULT_BUFFER_SIZE):
+        hashers = [a() for a in algos]
+        fh = self.open(name, 'rb')
+        while True:
+            data = fh.read(buffer_size)
+            if not data:
+                break
+            for hasher in hashers:
+                hasher.update(data)
+        return [h.hexdigest() for h in hashers]
+
 
 class FileSystemStorage(Storage):
 
@@ -63,8 +82,8 @@ class FileSystemStorage(Storage):
     def exists(self, name):
         return exists(self.path(name))
 
-    def open(self, name=''):
-        return open(self.path(name))
+    def open(self, name, mode='r'):
+        return open(self.path(name), mode)
 
     def listdir(self, name=''):
         dirs, files = [], []
