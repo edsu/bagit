@@ -35,3 +35,22 @@ def test_bag_info():
     assert "Bagging-Date: 1970-01-01" in bag_info
     assert "Payload-Oxum: 991765.5" in bag_info
     assert "Bag-Software-Agent: bagit.py v1.5.4 <https://github.com/LibraryOfCongress/bagit-python>" in bag_info
+
+def test_sha1_sha256_manifest():
+    bag = bagit.make_bag(TEMP_DATA, checksums=["sha1", "sha256"])
+    assert isfile(join(TEMP_DATA, "manifest-sha1.txt"))
+    assert isfile(join(TEMP_DATA, "manifest-sha256.txt"))
+    assert bag.validate(bag, fast=True)
+
+def test_md5_sha256_manifest():
+    bag = bagit.make_bag(TEMP_DATA, checksums=["md5", "sha256"])
+    assert isfile(join(TEMP_DATA, "manifest-md5.txt"))
+    assert isfile(join(TEMP_DATA, "manifest-sha256.txt"))
+    assert bag.validate(bag, fast=True)
+
+def test_md5_sha1_sha256_manifest():
+    bag = bagit.make_bag(TEMP_DATA, checksums=["md5", "sha1", "sha256"])
+    assert isfile(join(TEMP_DATA, "manifest-md5.txt"))
+    assert isfile(join(TEMP_DATA, "manifest-sha1.txt"))
+    assert isfile(join(TEMP_DATA, "manifest-sha256.txt"))
+    assert bag.validate(bag, fast=True)

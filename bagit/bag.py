@@ -18,5 +18,3 @@ class Bag:
 
     def __init__(self, location, create=False):
         self.storage = Storage.new_from_location(location)
-        if create:
-            self.
