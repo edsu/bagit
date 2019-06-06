@@ -66,17 +66,12 @@ class Storage:
 
     def sha256(self, name):
         return self.hexdigest(name, [hashlib.sha256])[0]
- 
-    def hexdigest(self, name, algos, buffer_size=io.DEFAULT_BUFFER_SIZE):
-        hashers = [a() for a in algos]
-        fh = self.open(name, 'rb')
-        while True:
-            data = fh.read(buffer_size)
-            if not data:
-                break
-            for hasher in hashers:
-                hasher.update(data)
-        return [h.hexdigest() for h in hashers]
+
+    def hexdigest(self, name, algos):
+        raise NotImplementedError("subcasses of Storage must provide a hexdigest() method")
+
+    def walk(self):
+        raise NotImplementedError("subcasses of Storage my provide a walk() method")
 
 
 class FileSystemStorage(Storage):
@@ -109,3 +104,26 @@ class FileSystemStorage(Storage):
             else:
                 files.append(entry.name)
         return dirs, files
+ 
+    def hexdigest(self, name, algos, buffer_size=io.DEFAULT_BUFFER_SIZE):
+        hashers = [a() for a in algos]
+        fh = self.open(name, 'rb')
+        while True:
+            data = fh.read(buffer_size)
+            if not data:
+                break
+            for hasher in hashers:
+                hasher.update(data)
+        return [h.hexdigest() for h in hashers]
+
+    def walk(self):
+        for dirname, dirnames, filenames in os.walk(self.location):
+            rel_dirname = dirname.replace(self.location, '')
+            for filename in filenames:
+                yield os.path.join(rel_dirname, filename)
+
+    def hash(self, algos=[hashlib.sha256]):
+        hashes = {}
+        for path in self.walk():
+            hashes[path] = self.hexdigest(path, algos)
+        return hashes
