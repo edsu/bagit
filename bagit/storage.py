@@ -121,9 +121,3 @@ class FileSystemStorage(Storage):
             rel_dirname = dirname.replace(self.location, '')
             for filename in filenames:
                 yield os.path.join(rel_dirname, filename)
-
-    def hash(self, algos=[hashlib.sha256]):
-        hashes = {}
-        for path in self.walk():
-            hashes[path] = self.hexdigest(path, algos)
-        return hashes

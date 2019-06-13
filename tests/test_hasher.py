@@ -1,5 +1,5 @@
 from .storage import FileStorage
-from .hasher import hasher
+from .hasher import Hasher
 
 from utils import *
 
@@ -13,6 +13,7 @@ def test_hasher():
     }
 
     storage = FileStorage(TEMP_DATA)
-    for path, checksums in hasher(storage, ["md5"]):
+    hasher = Hasher(storage)
+    for path, checksums in hasher(["md5"]):
         assert path in expected
         assert checksums["md5"] == expected[path]
