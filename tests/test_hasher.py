@@ -13,7 +13,7 @@ def test_hasher():
     }
 
     storage = FileStorage(TEMP_DATA)
-    hasher = Hasher(storage)
-    for path, checksums in hasher(["md5"]):
+    hasher = Hasher(algos=["md5"])
+    for path, checksums in hasher(storage):
         assert path in expected
         assert checksums["md5"] == expected[path]
