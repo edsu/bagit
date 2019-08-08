@@ -1,5 +1,5 @@
-from .storage import FileStorage
-from .hasher import Hasher
+from bagit.storage import FileStorage
+from bagit.hasher import Hasher
 
 from utils import *
 
