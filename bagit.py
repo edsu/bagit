@@ -10,6 +10,7 @@ import multiprocessing
 import os
 import re
 import signal
+import stat
 import sys
 import tempfile
 import unicodedata
@@ -233,7 +234,7 @@ def make_bag(
 
             # permissions for the payload directory should match those of the
             # original directory
-            os.chmod("data", os.stat(cwd).st_mode)
+            os.chmod("data", stat.S_IMODE(os.stat(cwd).st_mode))
 
             total_bytes, total_files = make_manifests(
                 "data", processes, algorithms=checksums, encoding=encoding
